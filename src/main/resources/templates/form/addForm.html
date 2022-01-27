@@ -38,19 +38,56 @@
         <hr class="my-4">
 
         <!-- single checkbox -->
-        <div>판매 여부</div> <div>
-        <div class="form-check">
-            <input type="checkbox" id="open" name="open" th:field="*{open}" class="form-check-input">
-<!--            <input type="hidden"             name="_open" value="on" />-->
-            <label for="open" class="form-check-label">판매 오픈</label>
+        <div>판매 여부</div>
+        <div>
+            <div class="form-check">
+                <input type="checkbox" id="open" name="open" th:field="*{open}" class="form-check-input">
+    <!--            <input type="hidden"             name="_open" value="on" />-->
+                <label for="open" class="form-check-label">판매 오픈</label>
+            </div>
+    <!--        HTML 체크박스는 체크해서 form 날리면 open=on 으로 값이 넘어간다. 이를 true 로 변환해 주는 게 스프링 타입 컨버터.
+                HTML 체크박스를 해제해서 form 날리면 open 이라는 필드 자체가 서버로 전송되지 않는다.
+                즉 open 이 null 이 된다. 이를 방지하기 위해 스프링 mvc 에서는 하나의 트릭을 제공한다.
+                동일한 이름에 _ 를 앞에 붙인 히든 필드를 만들고 이 값을 on 으로 하면 체크박스가 해제된 경우 이 필드만 전송되고
+                스프링은 이 필드만 전송된 경우 open 에 false 를 넣어준다.
+                thymeleaf 를 사용하는 경우는 _open 을 자동 생성 해준다!! -->
         </div>
-<!--        HTML 체크박스는 체크해서 form 날리면 open=on 으로 값이 넘어간다. 이를 true 로 변환해 주는 게 스프링 타입 컨버터.
-            HTML 체크박스를 해제해서 form 날리면 open 이라는 필드 자체가 서버로 전송되지 않는다.
-            즉 open 이 null 이 된다. 이를 방지하기 위해 스프링 mvc 에서는 하나의 트릭을 제공한다.
-            동일한 이름에 _ 를 앞에 붙인 히든 필드를 만들고 이 값을 on 으로 하면 체크박스가 해제된 경우 이 필드만 전송되고
-            스프링은 이 필드만 전송된 경우 open 에 false 를 넣어준다.
-            thymeleaf 를 사용하는 경우는 _open 을 자동 생성 해준다!! -->
-    </div>
+
+        <!-- multi checkbox -->
+        <div>
+            <div>등록 지역</div>
+            <div th:each="region : ${regions}" class="form-check form-check-inline">
+                <input type="checkbox" th:field="*{regions}" th:value="${region.key}"
+                       class="form-check-input">
+                <label th:for="${#ids.prev('regions')}"
+                       th:text="${region.value}" class="form-check-label">서울</label>
+            </div>
+        </div>
+
+        <!-- radio button -->
+        <div>
+            <div>상품 종류</div>
+            <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
+                <input type="radio" th:field="*{itemType}" th:value="${type.name()}"
+                       class="form-check-input">
+                <label th:for="${#ids.prev('itemType')}" th:text="${type.description}"
+                       class="form-check-label">
+                    BOOK
+                </label>
+            </div>
+        </div>
+
+        <!-- SELECT -->
+        <div>
+            <div>배송 방식</div>
+            <select th:field="*{deliveryCode}" class="form-select">
+                <option value="">==배송 방식 선택==</option>
+                <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"
+                        th:text="${deliveryCode.displayName}">FAST</option>
+            </select>
+        </div>
+
+        <hr class="my-4">
 
         <div class="row">
             <div class="col">
